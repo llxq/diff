@@ -2,13 +2,14 @@ import { useState } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import Render from './utils/Mustache/Render';
+import { get } from './utils/Object';
 
 
 function App (): JSX.Element {
     const [count, setCount] = useState(0)
     const template = `
      <div>
-        <p>{{ a.b }}</p>
+        <p>{{ a }}</p>
         <p>{{ name }}</p>
         <ul>
             {{ #list }}
@@ -19,7 +20,7 @@ function App (): JSX.Element {
                 年龄：{{ age }}
             </li>
             <ul>
-                {{ #hobbies }}
+                hobbies: {{ #hobbies }}
                 <li>{{ . }}</li>
                 {{ /hobbies }}
             </ul>
@@ -47,6 +48,27 @@ function App (): JSX.Element {
     }
 
     const render = new Render(template, data)
+
+    console.log(get(data, 'list[1].name'))
+
+    let obj = {
+        a: 1
+    }
+    const list = ['a', 'b', 'c']
+    console.log(list.reduce((result: any, current: any, index: number) => {
+        const last = index === list.length - 1
+        if (result && typeof result === 'object' && Reflect.has(result, current)) {
+            const _result = result[current]
+            if (!last && typeof _result !== 'object') {
+                result[current] = {}
+                return result[current]
+            }
+            return result[current]
+        } else {
+            result[current] = last ? 'last' : {}
+        }
+        return result
+    }, obj))
 
     return (
         <div className="App">

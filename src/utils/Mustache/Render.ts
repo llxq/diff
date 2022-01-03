@@ -11,9 +11,14 @@ export default class Render {
         this.tokens = token.getTokens() ?? []
     }
 
-    private get = (data: Obj, token: TokenType): any => {
-        const paths: string[] = toPath(token.content ?? '')
-        return get(data, paths)
+    private get = (data: Obj, token: TokenType, toString = true): any => {
+        try {
+            const result = get(data, toPath(token.content ?? ''))
+            return toString ? JSON.stringify(result) : result
+        } catch (e) {
+            console.log(e)
+            return undefined
+        }
     }
 
     private setData = (tokens: Array<TokenType>, data: any): string => {
@@ -23,7 +28,7 @@ export default class Render {
                 renderStr += token.content
             } else if (token.type === '#') {
                 // 数组判断
-                const list = this.get(data, token)
+                const list = this.get(data, token, false)
                 if (isArray(list) && list.length) {
                     each(list, item => {
                         renderStr += this.setData(token.children ?? [], item)

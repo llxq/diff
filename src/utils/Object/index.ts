@@ -61,3 +61,41 @@ export const each = <T extends Obj>(source: T, callback: Callback<T>): void => {
         callback(source, -1)
     }
 }
+
+/**
+ * 处理路径
+ * @param path 路径
+ * @returns 路径数组
+ */
+export const toPaths = (path: string): string[] => {
+    if (!path) return []
+    return path.split('.').reduce((result: string[], key: string) => {
+        if (key) {
+            // 处理数字
+            if (/\[\d+\]$/.test(key)) {
+                const list: NullAble<RegExpMatchArray> = key.match(/(\w+)(\[(\d+)\]$)/)
+                if (list && list.length >= 4) {
+                    // 数组的key
+                    result.push(list[1])
+                    // 索引
+                    result.push(list[3])
+                }
+            } else {
+                result.push(key.trim())
+            }
+        }
+        return result
+    }, [])
+}
+
+/**
+ * 根据路径获取值
+ * @param source 源
+ * @param path 路径
+ * @returns 返回获取的值
+ */
+export const get = <T extends object>(source: T, path: string | string[]): any => {
+    if (!path || !source) return undefined
+    const paths = path instanceof Array ? path : toPaths(path)
+    return paths.reduce((result: any, key: string) => result?.[key], source)
+}
