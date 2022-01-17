@@ -1,4 +1,4 @@
-import { TagKey, vNode, VNode } from './VNode'
+import { TagKey, vNode, VNode } from './vNode'
 
 export const primitive = (type: unknown): type is string | number => {
     return typeof type === "string" ||

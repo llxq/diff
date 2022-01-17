@@ -1,11 +1,11 @@
-import { vNode, TagKey, VNode } from './VNode'
+import { vNode, TagKey, VNode } from './vNode'
 import { primitive, isUndefined, isArray, isVnode } from './utils'
 
 // h('span', 'text')
 // h('div', { class: 'abc' })
 // h('div', { class: 'abc' }, [h('span', 'text')])
 
-type ChildrenType = Array<VNode> | string | number
+type ChildrenType = Array<VNode> | string | number | Obj
 
 export default function h(selector: TagKey): VNode;
 export default function h(selector: TagKey, children: ChildrenType): VNode;
