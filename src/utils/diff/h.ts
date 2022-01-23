@@ -1,5 +1,5 @@
 import { vNode, TagKey, VNode } from './vNode'
-import { primitive, isUndefined, isArray, isVnode } from './utils'
+import { primitive, isUndefined, isArray, isVNode } from './utils'
 
 // h('span', 'text')
 // h('div', { class: 'abc' })
@@ -34,7 +34,7 @@ export default function h(selector: TagKey, a?: any, b?: any): VNode {
             children = b
         } else if (primitive(b)) {
             text = b.toString()
-        } else if (isVnode(b)) {
+        } else if (isVNode(b)) {
             children = [b]
         }
     } else if (!isUndefined(a)) {
@@ -42,7 +42,7 @@ export default function h(selector: TagKey, a?: any, b?: any): VNode {
             children = a
         } else if (primitive(a)) {
             text = a.toString()
-        } else if (isVnode(a)) {
+        } else if (isVNode(a)) {
             children = [a]
         } else {
             attribute = a
