@@ -1,18 +1,14 @@
-import { vNode, TagKey, VNode } from './vNode'
-import { primitive, isUndefined, isArray, isVNode } from './utils'
-
-// h('span', 'text')
-// h('div', { class: 'abc' })
-// h('div', { class: 'abc' }, [h('span', 'text')])
+import { TagKey, vNode, VNode } from './vNode'
+import { isArray, isUndefined, isVNode, primitive } from './utils'
 
 type ChildrenType = Array<VNode> | string | number | Obj
 
-export default function h(selector: TagKey): VNode;
-export default function h(selector: TagKey, children: ChildrenType): VNode;
-export default function h(selector: TagKey, attribute: UndefinAble<Obj>, children: ChildrenType): VNode;
+export default function h (selector: TagKey): VNode;
+export default function h (selector: TagKey, children: ChildrenType): VNode;
+export default function h (selector: TagKey, attribute: UndefinAble<Obj>, children: ChildrenType): VNode;
 
 
-export default function h(selector: TagKey, a?: any, b?: any): VNode {
+export default function h (selector: TagKey, a?: any, b?: any): VNode {
 
     // 目前不处理 选择器为 div.a 和 div#b 这种情况
     if (!selector) {

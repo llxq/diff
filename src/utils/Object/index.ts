@@ -11,7 +11,7 @@ type Callback<T extends Obj> = (item: Keys<T>, index: number, source?: T) => boo
  * @param compareEmpty 是否需要对比空
  * @returns 返回是否存在
  */
-export const containsValue = <T extends Obj>(value: unknown, object: T, compareEmpty = false): boolean => {
+export const containsValue = <T extends Obj> (value: unknown, object: T, compareEmpty = false): boolean => {
 
     if (compareEmpty) {
         if (isUndefined(value) || isNull(object)) return isUndefined(object) || isNull(object)
@@ -43,9 +43,9 @@ export const containsValue = <T extends Obj>(value: unknown, object: T, compareE
 /**
  * 遍历对象或者数组
  * @param source 需要遍历的对象
- * @param callback 回调 (item, index, source) => bolean | void
+ * @param callback 回调 (item, index, source) => boolean | void
  */
-export const each = <T extends Obj>(source: T, callback: Callback<T>): void => {
+export const each = <T extends Obj> (source: T, callback: Callback<T>): void => {
     if (isArray(source)) {
         for (let i = 0; i < source.length; i++) {
             if (callback(source[i], i)) return
@@ -94,8 +94,9 @@ export const toPaths = (path: string): string[] => {
  * @param path 路径
  * @returns 返回获取的值
  */
-export const get = <T extends object>(source: T, path: string | string[]): any => {
-    if (!path || !source) return undefined
+export const get = <T extends object> (source: T, path?: string | string[]): any => {
+    if (!source) return undefined
+    if (!path) return source
     const paths = path instanceof Array ? path : toPaths(path)
     return paths.reduce((result: any, key: string) => result?.[key], source)
 }

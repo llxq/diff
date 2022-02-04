@@ -1,12 +1,12 @@
-import { each } from "../Object";
-import Tokens, { TokenType } from "./Tokens";
-import { isArray, toPath, get } from 'lodash'
+import { each } from '../Object'
+import Tokens, { TokenType } from './Tokens'
+import { get, isArray, toPath } from 'lodash'
 
 export default class Render {
 
     public readonly tokens: Array<TokenType>
 
-    constructor(public templateStr: string, public data: Obj) {
+    constructor (public templateStr: string, public data: Obj) {
         const token = new Tokens(this.templateStr)
         this.tokens = token.getTokens() ?? []
     }
@@ -52,7 +52,7 @@ export default class Render {
         return renderStr
     }
 
-    public render(): string {
+    public render (): string {
         return this.setData(this.tokens, this.data)
     }
 }

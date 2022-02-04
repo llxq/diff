@@ -1,7 +1,7 @@
 import { each } from '../Object'
 import { trim } from './utils'
 
-export const setAttribute = <T extends Obj>(attribute: T, elm: HTMLElement) => {
+export const setAttribute = <T extends Obj> (attribute: T, elm: HTMLElement): void => {
     const attributeKeys: string[] = Object.keys(attribute)
     each(attributeKeys, (key: string) => {
         if (key === 'class') {

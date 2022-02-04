@@ -1,5 +1,5 @@
-import { each } from "../Object";
-import Scanned from "./Scanned";
+import { each } from '../Object'
+import Scanned from './Scanned'
 
 export interface TokenType {
     type: 'text' | 'expression' | '#' | '/' | '.'
@@ -67,12 +67,16 @@ export default class Tokens {
     public getTokens (): Array<TokenType> {
         while (this.scanned.hasNext) {
             const words = this.scanned.find('{{')
-            words && this.addToken({content: words, index: this.scanned.index})
+            words && this.addToken({ content: words, index: this.scanned.index })
 
             const expression = this.scanned.find('}}')?.trim() ?? ''
             if (expression) {
                 const firstChar = expression[0] ?? ''
-                let token: TokenType = {type: 'expression', content: expression.substring(1), index: this.scanned.index}
+                let token: TokenType = {
+                    type: 'expression',
+                    content: expression.substring(1),
+                    index: this.scanned.index
+                }
                 switch (firstChar) {
                     case '#':
                         token.type = '#'
