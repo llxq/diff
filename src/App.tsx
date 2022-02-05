@@ -45,10 +45,10 @@ function App(): JSX.Element {
         obj.c.b = 21
 
         const html = `
-        <div>
+        <div class="div1" data-a="abc" id='id1'>
             <h1>这是一个h1</h1>
             这有个div的文字呢
-            <ul>
+            <ul class="ul1">
                 <li>1</li>
                 <li>2</li>
                 <li>3</li>
@@ -59,7 +59,6 @@ function App(): JSX.Element {
         console.log(ast)
         const newHtml = parseHtml(ast)
         console.log(newHtml)
-        console.log(newHtml === html.trim())
     })
 
     return (

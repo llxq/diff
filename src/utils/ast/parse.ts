@@ -1,25 +1,62 @@
+import { each } from "lodash"
+
 export enum ElementType {
     HTML = 3,
     TEXT = 4
 }
 
+interface Attribute {
+    name: string
+    value: string
+}
+
 export interface ASTElement {
     tag?: string
     text: string
-    type: ElementType // 暂时只解析 3 类型
-    attribuete?: Array<{ name: string, value: string }>
+    type: ElementType
+    attribute?: Array<Attribute>
     children?: Array<ASTElement>
 }
 
 // 匹配开始标签正则
-const startTagReg = /^\<([a-zA-Z]+[1-6]?)\>/
+const startTagReg = /^\<([a-zA-Z]+[1-6]?)(\s[^\<]+)?\>/
 // 匹配结束标签正则
 const endTagReg = /^\<\/([a-zA-Z]+[1-6]?)\>/
 // 匹配文字
 const textTagReg = /([\s\S]*?)\</
+// 属性正则
+const attributeReg = /([\w-]+\s*=["']{1}[\s\w-]+["']{1})/
+// 切割属性正则
+const splitAttributeReg = /([\w-]+\s*)=["']{1}([\s\w-]+)["']{1}/
+
+const getAttribute = (attributeStr: string): Array<Attribute> => {
+    const attributes: Array<Attribute> = []
+    if (attributeStr) {
+        attributeStr = attributeStr.trim()
+        let index = 0
+        let residueStr = ''
+        while (index < attributeStr.length - 1) {
+            residueStr = attributeStr.substring(index)
+            if (attributeReg.test(residueStr)) {
+                const attribute = residueStr.match(attributeReg)?.[1]
+                if (attribute) {
+                    const splitAttribute = attribute.match(splitAttributeReg)
+                    if (splitAttribute?.length && splitAttribute.length >= 3) {
+                        attributes.push({ name: splitAttribute[1], value: splitAttribute[2] })
+                    }
+                }
+                index += attribute?.length ?? 0
+            } else {
+                index++
+            }
+        }
+    }
+    return attributes
+}
 
 export const parseAst = (html: string): UndefinAble<ASTElement> => {
     if (!html) return undefined
+    // 暂时不处理模板的前后空格
     html = html.trim()
     // 开始解析
     let astElement: UndefinAble<ASTElement>
@@ -30,9 +67,14 @@ export const parseAst = (html: string): UndefinAble<ASTElement> => {
         residueHtml = html.substring(index)
         if (startTagReg.test(residueHtml)) {
             const startTag = residueHtml.match(startTagReg)?.[1] ?? ''
+            const attributeStr = residueHtml.match(startTagReg)?.[2] ?? ''
+            const stack = { tag: startTag, text: '', type: ElementType.HTML }
+            if (attributeStr) {
+                Reflect.set(stack, 'attribute', getAttribute(attributeStr))
+            }
             // 入栈
-            stacks.push({ tag: startTag, text: '', type: ElementType.HTML })
-            index += startTag.length + 2
+            stacks.push(stack)
+            index += startTag.length + 2 + attributeStr.length
         } else if (textTagReg.test(residueHtml) && !endTagReg.test(residueHtml)) {
             const text = residueHtml.match(textTagReg)?.[1] ?? ''
             const prepStack = stacks[stacks.length - 1]
@@ -73,8 +115,14 @@ const getHtml = (ast: ASTElement): string => {
     if (ast.type === ElementType.TEXT) {
         return ast.text
     }
-    const children = `${ ast.text }${ ast.children?.map(it => getHtml(it)).join('') ?? '' }`
-    return `<${ast.tag}>${ children }</${ast.tag}>`
+    const children = `${ast.text}${ast.children?.map(it => getHtml(it)).join('') ?? ''}`
+    let startTag = ast.tag
+    if (ast.attribute) {
+        each(ast.attribute, attr => {
+            startTag += ` ${attr.name}="${attr.value}"`
+        })
+    }
+    return `<${startTag}>${children}</${ast.tag}>`
 }
 
 export const parseHtml = (ast: UndefinAble<ASTElement>): string => {
