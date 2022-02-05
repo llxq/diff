@@ -27,7 +27,7 @@ export function defineReactive (obj: Obj, key: string, val?: any): void {
 
     // 如果第三个参数没有传递，并且没有设置读取器  则从 key上获取值，如果设置了读取器，下面的value在get的时候会从读取器中获取。这样后续可以保证用户可以通过读取器对数据进行进一步的拦截。如果没有设置读取器，则手动读取即可，下面操作的也都是 val
     if (arguments.length === 2 && !getter) {
-        val = obj[key]
+        val = Reflect.get(obj, key)
     }
 
     // 如果子元素的值为对象也需要转化为 observer
