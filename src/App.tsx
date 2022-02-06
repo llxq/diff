@@ -45,7 +45,7 @@ function App(): JSX.Element {
         obj.c.b = 21
 
         const html = `
-        <div class="div1" data-a="abc" id='id1'>
+        <div :class="a.b" data-a="abc" id='id1'>
             <h1>这是一个h1</h1>
             这有个div的文字呢
             <ul class="ul1">

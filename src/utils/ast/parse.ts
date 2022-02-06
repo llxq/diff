@@ -1,13 +1,9 @@
 import { each } from "lodash"
+import { Attribute, getAttribute } from "./attribute"
 
 export enum ElementType {
     HTML = 3,
     TEXT = 4
-}
-
-interface Attribute {
-    name: string
-    value: string
 }
 
 export interface ASTElement {
@@ -24,35 +20,6 @@ const startTagReg = /^\<([a-zA-Z]+[1-6]?)(\s[^\<]+)?\>/
 const endTagReg = /^\<\/([a-zA-Z]+[1-6]?)\>/
 // 匹配文字
 const textTagReg = /([\s\S]*?)\</
-// 属性正则
-const attributeReg = /([\w-]+\s*=["']{1}[\s\w-]+["']{1})/
-// 切割属性正则
-const splitAttributeReg = /([\w-]+\s*)=["']{1}([\s\w-]+)["']{1}/
-
-const getAttribute = (attributeStr: string): Array<Attribute> => {
-    const attributes: Array<Attribute> = []
-    if (attributeStr) {
-        attributeStr = attributeStr.trim()
-        let index = 0
-        let residueStr = ''
-        while (index < attributeStr.length - 1) {
-            residueStr = attributeStr.substring(index)
-            if (attributeReg.test(residueStr)) {
-                const attribute = residueStr.match(attributeReg)?.[1]
-                if (attribute) {
-                    const splitAttribute = attribute.match(splitAttributeReg)
-                    if (splitAttribute?.length && splitAttribute.length >= 3) {
-                        attributes.push({ name: splitAttribute[1], value: splitAttribute[2] })
-                    }
-                }
-                index += attribute?.length ?? 0
-            } else {
-                index++
-            }
-        }
-    }
-    return attributes
-}
 
 export const parseAst = (html: string): UndefinAble<ASTElement> => {
     if (!html) return undefined
